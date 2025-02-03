@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: dev
+  annotations:
+   service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-0bbdc844f921ec53f,subnet-08f6960186fe23dce,subnet-030b2dcc71cad69b0
+   service.beta.kubernetes.io/aws-load-balancer-ssl-cert: http://a883c256d6189410b8ab52f19e78cbd3-1092627517.ap-south-1.elb.amazonaws.com
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

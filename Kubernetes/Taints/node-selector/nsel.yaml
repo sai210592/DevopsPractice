@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  namespace: dev
+  name: nginx-deployment
+spec: 
+
+  replicas: 2
+  selector: 
+   matchLabels:
+    app: nginx
+  template:
+    metadata: 
+     labels: 
+       app: nginx
+    spec:
+     nodeSelector: 
+      sai: devops
+     containers:
+      - name: nginx-deployment
+        image: nginx  

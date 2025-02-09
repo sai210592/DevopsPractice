@@ -1,0 +1,74 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('Aws_Credentials')   // AWS Access Key stored in Jenkins
+        AWS_SECRET_ACCESS_KEY = credentials('Aws_Credentials') // AWS Secret Key stored in Jenkins
+    }
+    
+    parameters {
+        choice(name: 'REGION', choices: ['eu-west-2', 'ap-south-1', 'eu-west-1'], description: 'Select the AWS region')
+        choice(name: 'Action', choices: ['Apply', 'Destroy'], description: 'Select Action')
+    }
+
+    stages {
+        
+        stage('Region Selection') {
+            steps {
+                script {
+                    echo "Selected region: ${params.REGION}"
+                }
+            }
+        }
+        
+        stage('Preparing Terraform File') {
+            steps {
+                // Checkout your Terraform code from Git repository or download it
+                sh "curl -o main.tf ${Terraform_URL}"
+            }
+        }
+        
+        stage('Initialize Terraform') {
+            steps {
+                script {
+                    // Initialize Terraform
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Plan') {
+            steps {
+                script {
+                    // Run Terraform plan and save the output to a file
+                    sh 'terraform plan -out=plan.out'
+                }
+            }
+        }
+
+        stage('Apply or Delete') {
+            steps {
+                script {
+                    if (params.Action == 'Apply') {
+                        // Apply Terraform changes using the saved plan
+                        echo 'Applying Terraform changes...'
+                        sh 'terraform apply -auto-approve plan.out'
+                    } else if (params.Action == 'Destroy') {
+                        // Perform Terraform destroy (delete resources)
+                        echo 'Deleting Terraform resources...'
+                        sh 'terraform destroy -auto-approve'
+                    }
+                }
+            }
+        }
+
+        stage('Output Instance ID') {
+            steps {
+                script {
+                    // Retrieve and display the output (instance ID)
+                    sh 'terraform output instance_id'
+                }
+            }
+        }
+    }
+}

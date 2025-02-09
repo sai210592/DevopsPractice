@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "sai" {
     
-    bucket = "sai210592"
+    bucket = "sai2105"
 
 }
 

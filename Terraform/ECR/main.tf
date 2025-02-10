@@ -11,7 +11,7 @@ resource "aws_ecr_repository" "my_private_repository" {
 
   # Optional: Prevent accidental deletion
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 
   tags = {

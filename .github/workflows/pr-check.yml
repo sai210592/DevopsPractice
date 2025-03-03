@@ -1,0 +1,27 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main  # You can change 'main' to your target branch like 'develop'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # You can also use macos-latest or windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Checks out your code
+
+      - name: Set up Node.js (if using Node.js)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Specify the Node.js version
+
+      - name: Install dependencies
+        run: npm install  # Modify this command based on your project (e.g., `pip install` for Python)
+
+      - name: Run tests
+        run: npm test  # Modify this command to run your tests, e.g., `pytest` for Python
+
+          
